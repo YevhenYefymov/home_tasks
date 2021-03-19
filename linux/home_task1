@@ -1,0 +1,76 @@
+Listing:
+
+-working directory:
+yevhen.yefymov@pc1camp:~/tmp$ ls
+softlinks  textfile
+
+-file content:
+yevhen.yefymov@pc1camp:~/tmp$ cat textfile 
+Some Text
+
+-create broken links:
+yevhen.yefymov@pc1camp:~/tmp$ mkdir brokenSoftlinks
+yevhen.yefymov@pc1camp:~/tmp$ ln -s textfile brokenSoftlinks/bln1
+yevhen.yefymov@pc1camp:~/tmp$ ln -s textfile brokenSoftlinks/bln2
+yevhen.yefymov@pc1camp:~/tmp$ ln -s textfile brokenSoftlinks/bln3
+
+-create working links:
+yevhen.yefymov@pc1camp:~/tmp$ cd softlinks/
+yevhen.yefymov@pc1camp:~/tmp/softlinks$ ln -s ../textfile ln1
+yevhen.yefymov@pc1camp:~/tmp/softlinks$ ln -s ../textfile ln2
+yevhen.yefymov@pc1camp:~/tmp/softlinks$ ln -s ../textfile ln3
+yevhen.yefymov@pc1camp:~/tmp/softlinks$ cd ../
+
+-list links:
+yevhen.yefymov@pc1camp:~/tmp$ ls softlinks/
+ln1  ln2  ln3
+yevhen.yefymov@pc1camp:~/tmp$ ls brokenSoftlinks/
+bln1  bln2  bln3
+
+-test working link:
+yevhen.yefymov@pc1camp:~/tmp$ cat softlinks/ln1
+Some Text
+
+-test broken link:
+yevhen.yefymov@pc1camp:~/tmp$ cat brokenSoftlinks/bln1
+cat: brokenSoftlinks/bln1: No such file or directory
+
+
+-create bash script for removing broken links:
+yevhen.yefymov@pc1camp:~/tmp$ touch rmBrokenLinks.sh
+yevhen.yefymov@pc1camp:~/tmp$ ls
+brokenSoftlinks  rmBrokenLinks.sh  softlinks  textfile
+
+-script content:
+#! /bin/bash
+
+dirs=$(ls -d */)
+
+for dir in ${dirs[@]}
+do
+    links=$(ls ./$dir)
+    for link in ${links[@]}
+    do
+        path=./$dir/$link
+        if [ ! -e $path ]
+        then
+            rm ./$path
+        fi
+    done
+done
+
+-add execute permission:
+yevhen.yefymov@pc1camp:~/tmp$ chmod +x rmBrokenLinks.sh
+
+-execute script:
+yevhen.yefymov@pc1camp:~/tmp$ ./rmBrokenLinks.sh 
+
+-list broken links directory:
+yevhen.yefymov@pc1camp:~/tmp$ ls brokenSoftlinks/
+(no output)
+
+-list working links directory:
+yevhen.yefymov@pc1camp:~/tmp$ ls softlinks/
+ln1  ln2  ln3
+
+
