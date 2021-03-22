@@ -1,0 +1,81 @@
+-run containers with selected network and bind mount (containers are started in two tabs):
+sudo docker container run -it --network my_net -v "$(pwd)"/scripts:/mnt/host alpine:latest
+
+
+-show running containers:
+yevhen.yefymov@pc1camp:~/dockerStuff/scripts$ sudo docker container ls
+[sudo] password for yevhen.yefymov: 
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+aeaaddfd5457        alpine:latest       "/bin/sh"           11 seconds ago      Up 9 seconds                            fervent_colden
+8cc9cc466e2a        alpine:latest       "/bin/sh"           15 seconds ago      Up 13 seconds                           infallible_wiles
+
+
+-network info of my_net:
+
+yevhen.yefymov@pc1camp:~/dockerStuff/scripts$ sudo docker network inspect my_net
+[
+    {
+        "Name": "my_net",
+        "Id": "14c1c56fb9362bf6aad94b62cdcb9724e8a00e88598b02576e0e31f3f09730dd",
+        "Created": "2021-03-19T15:54:53.22355528+02:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "8cc9cc466e2a3394004f03a3eb6059c93cf4d22c78d79ce6a42287e37652eb0a": {
+                "Name": "infallible_wiles",
+                "EndpointID": "52f544fe7045f4307d22babbb9b104a2d09222747a042475b5fd3c6b8967c9f0",
+                "MacAddress": "02:42:ac:12:00:02",
+                "IPv4Address": "172.18.0.2/16",
+                "IPv6Address": ""
+            },
+            "aeaaddfd545726fa9db75b5a5bb9b77fe12c3cf28f7e1b15afe81a88c6412e37": {
+                "Name": "fervent_colden",
+                "EndpointID": "cc226193920e9b5ee63ae19125eb45f6c70d261dc08b956b1073933c2a184201",
+                "MacAddress": "02:42:ac:12:00:03",
+                "IPv4Address": "172.18.0.3/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {},
+        "Labels": {}
+    }
+]
+
+
+-list directory on host that was mounted to container:
+yevhen.yefymov@pc1camp:~/dockerStuff/scripts$ ls
+client.sh  savedip  server.sh
+
+-list mounted directory in container:
+/ # cd /mnt/host
+/mnt/host # ls
+client.sh  savedip    server.sh
+
+
+-start server in first container and catch the message:
+/mnt/host # ./server.sh 
+listening on [::]:8080 ...
+connect to [::ffff:172.18.0.2]:8080 from aeaaddfd5457.my_net:39517 ([::ffff:172.18.0.3]:39517)
+Hello!
+
+-start client in the second container:
+/mnt/host # ./client.sh 
+Hello!
