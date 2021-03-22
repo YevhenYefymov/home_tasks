@@ -1,0 +1,106 @@
+-create files to link to:
+
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ touch existing_file
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ echo "AAA" > existing_file 
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ touch non_existing_file
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ echo "BBB" > non_existing_file 
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ ls
+existing_file  non_existing_file
+
+-create dir structure:
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ mkdir indir
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ mkdir anotherindir
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ mkdir indir/inindir
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ mkdir anotherindir/anotherinindir
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ mkdir anotherindir/anotherinindir/anotherininindir
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ ls
+anotherindir  existing_file  indir  non_existing_file
+
+-create links to both files:
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ ln -s existing_file link.existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ cat link.existing 
+AAA
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ cd indir/
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ ln -s ../existing_file link.existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ ln -s ../non_existing_file link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ cat ./link.non_existing 
+BBB
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ ls
+inindir  link.existing  link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ cd inindir/
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir/inindir$ ln -s ../../existing_file link.existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir/inindir$ ln -s ../../non_existing_file link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir/inindir$ ls
+link.existing  link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir/inindir$ cd ../../
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ ls
+anotherindir  existing_file  indir  link.existing  non_existing_file
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ cd anotherindir/
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir$ ls
+anotherinindir
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir$ ln -s ../existing_file link.existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir$ ln -s ../non_existing_file link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir$ cat link.existing 
+AAA
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir$ ls
+anotherinindir  link.existing  link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir$ cd anotherinindir/
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir$ ls
+anotherininindir
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir$ ln -s ../../non_existing_file link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir$ ln -s ../../existing_file link.existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir$ ls
+anotherininindir  link.existing  link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir$ cd anotherininindir/
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir/anotherininindir$ ln -s ../../../existing_file link.existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir/anotherininindir$ ln -s ../../../non_existing_file link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir/anotherininindir$ ls
+link.existing  link.non_existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir/anotherininindir$ cat link.non_existing 
+BBB
+yevhen.yefymov@pc1camp:~/bashStuff/Links/anotherindir/anotherinindir/anotherininindir$ ls -l
+total 0
+
+-verify that files are links:
+lrwxrwxrwx 1 yevhen.yefymov domain^users 22 бер 22 10:47 link.existing -> ../../../existing_file
+lrwxrwxrwx 1 yevhen.yefymov domain^users 26 бер 22 10:47 link.non_existing -> ../../../non_existing_file
+
+-delete non_existing_file to break the links pointing at it:
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ ls
+anotherindir  existing_file  indir  link.existing  non_existing_file
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ rm non_existing_file 
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ ls
+anotherindir  existing_file  indir  link.existing
+
+-verify that links that point to existing_file are still working, and links that point to non_existing_file are broken:
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ cd indir/
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ ls -l
+total 4
+drwxr-xr-x 2 yevhen.yefymov domain^users 4096 бер 22 10:45 inindir
+lrwxrwxrwx 1 yevhen.yefymov domain^users   16 бер 22 10:45 link.existing -> ../existing_file
+lrwxrwxrwx 1 yevhen.yefymov domain^users   20 бер 22 10:45 link.non_existing -> ../non_existing_file
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ cat link.existing 
+AAA
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ cat link.non_existing 
+cat: link.non_existing: No such file or directory
+
+-find all broken links:
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ find . -xtype l 
+./anotherindir/link.non_existing
+./anotherindir/anotherinindir/link.non_existing
+./anotherindir/anotherinindir/anotherininindir/link.non_existing
+./indir/link.non_existing
+./indir/inindir/link.non_existing
+
+-find and delete all broken links:
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ find . -xtype l -delete
+
+-verify that only broken links are removed:
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ ls
+anotherindir  existing_file  indir  link.existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links$ cd indir/
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ ls
+inindir  link.existing
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir$ cd inindir/
+yevhen.yefymov@pc1camp:~/bashStuff/Links/indir/inindir$ ls
+link.existing
