@@ -1,0 +1,36 @@
+-merge branch1 into master
+yevhen.yefymov@pc1camp:~/gitStuff/merge1$ git checkout master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+yevhen.yefymov@pc1camp:~/gitStuff/merge1$ git merge branch1 
+Updating d03b6cb..beda6c7
+Fast-forward
+ file1 | 3 +++
+ 1 file changed, 3 insertions(+)
+yevhen.yefymov@pc1camp:~/gitStuff/merge1$ git log -10 --oneline 
+beda6c7 (HEAD -> master, origin/branch1, branch1) add 5 to file1
+8ad314b add 4 to file1
+d03b6cb (origin/master, origin/HEAD) add 3 to file
+f8356cf add 2 to file
+a693d51 add 1 to file
+7ff3f55 initial commit
+
+-merge branch2 into master via rebase:
+yevhen.yefymov@pc1camp:~/gitStuff/merge1$ git checkout master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+yevhen.yefymov@pc1camp:~/gitStuff/merge1$ git rebase branch2
+First, rewinding head to replay your work on top of it...
+Applying: add 4 to file1
+Applying: add 5 to file1
+yevhen.yefymov@pc1camp:~/gitStuff/merge1$ git log -10 --oneline 
+b4a9b01 (HEAD -> master) add 5 to file1
+5876851 add 4 to file1
+8d27c4a (origin/branch2, branch2) add 8 to file2
+12ce4b9 add 7 to file2
+c390385 add 6 to file2
+d03b6cb (origin/master, origin/HEAD) add 3 to file
+f8356cf add 2 to file
+a693d51 add 1 to file
+7ff3f55 initial commit

@@ -1,0 +1,128 @@
+Task 3 logs
+
+-clone repository:
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ git clone https://gitlab.ow.s/oleksandra.bella/merge-conflict.git ./
+Cloning into '.'...
+remote: Counting objects: 73, done.
+remote: Compressing objects: 100% (11/11), done.
+remote: Total 73 (delta 4), reused 24 (delta 3)
+Unpacking objects: 100% (73/73), done.
+
+-checkout to the new branch:
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ git checkout -b branch/yyefymov
+Switched to a new branch 'branch/yyefymov'
+
+-add new remote:
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ git remote add my_remote https://github.com/YevhenYefymov/git_task.git
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ git remote -v
+my_remote	https://github.com/YevhenYefymov/git_task.git (fetch)
+my_remote	https://github.com/YevhenYefymov/git_task.git (push)
+origin	https://gitlab.ow.s/oleksandra.bella/merge-conflict.git (fetch)
+origin	https://gitlab.ow.s/oleksandra.bella/merge-conflict.git (push)
+
+-make and commit changes to shared_file:
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ echo 4 >> shared_file 
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ cat shared_file 
+number =
+4
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ git commit -a -m "add 4 to shared_file"
+[branch/yyefymov f7a983f] add 4 to shared_file
+ 1 file changed, 1 insertion(+)
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ git log -1
+commit f7a983ff9a0417687f98e7e461639ae5be38230c (HEAD -> branch/yyefymov)
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 19:00:50 2021 +0200
+
+    add 4 to shared_file
+
+
+
+-make new clone of the repository:
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git clone http://gitlab.ow.s/oleksandra.bella/merge-conflict.git ./
+Cloning into '.'...
+warning: redirecting to https://gitlab.ow.s/oleksandra.bella/merge-conflict.git/
+remote: Counting objects: 73, done.
+remote: Compressing objects: 100% (11/11), done.
+remote: Total 73 (delta 4), reused 24 (delta 3)
+Unpacking objects: 100% (73/73), done.
+
+-push changes from the first clone to my remote:
+yevhen.yefymov@pc1camp:~/gitStuff/remote1$ git push my_remote branch/yyefymov
+Username for 'https://github.com': YevhenYefymov
+Password for 'https://YevhenYefymov@github.com': 
+Counting objects: 9, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (9/9), 687 bytes | 687.00 KiB/s, done.
+Total 9 (delta 0), reused 0 (delta 0)
+To https://github.com/YevhenYefymov/git_task.git
+ * [new branch]      branch/yyefymov -> branch/yyefymov
+
+-checkout to my branch in the second clone:
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git checkout -b branch/yyefymov
+Switched to a new branch 'branch/yyefymov'
+
+-add some other value in shared_file in the second clone:
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ echo 5 >> shared_file
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git commit -a -m "add 5 to shared_file"
+[branch/yyefymov 1270137] add 5 to shared_file
+ 1 file changed, 1 insertion(+)
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git log -1
+commit 127013777c84b55216a59c68ec1dcab2acea917a (HEAD -> branch/yyefymov)
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 19:13:33 2021 +0200
+
+    add 5 to shared_file
+
+-add the same remote
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git remote add my_remote https://github.com/YevhenYefymov/git_task.git
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git remote -v
+my_remote	https://github.com/YevhenYefymov/git_task.git (fetch)
+my_remote	https://github.com/YevhenYefymov/git_task.git (push)
+origin	http://gitlab.ow.s/oleksandra.bella/merge-conflict.git (fetch)
+origin	http://gitlab.ow.s/oleksandra.bella/merge-conflict.git (push)
+
+-pull the changes from my remote:
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git pull my_remote branch/yyefymov
+Username for 'https://github.com': YevhenYefymov
+Password for 'https://YevhenYefymov@github.com': 
+From https://github.com/YevhenYefymov/git_task
+ * branch            branch/yyefymov -> FETCH_HEAD
+Auto-merging shared_file
+CONFLICT (content): Merge conflict in shared_file
+Automatic merge failed; fix conflicts and then commit the result.
+
+-resolve merge conflict:
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ cat shared_file 
+number =
+<<<<<<< HEAD
+5
+=======
+4
+>>>>>>> f7a983ff9a0417687f98e7e461639ae5be38230c
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ cat shared_file 
+number =
+5
+4
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git add .
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git commit 
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git log -1
+commit 55a4b0d0ccc1008b4bfa51cff11326eb45759d1f (HEAD -> branch/yyefymov)
+Merge: 1270137 f7a983f
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 19:21:05 2021 +0200
+
+    Merge branch 'branch/yyefymov' of https://github.com/YevhenYefymov/git_task into branch/yyefymov
+
+-push changes to my remote:
+yevhen.yefymov@pc1camp:~/gitStuff/remote2$ git push my_remote branch/yyefymov
+Username for 'https://github.com': YevhenYefymov
+Password for 'https://YevhenYefymov@github.com': 
+Counting objects: 6, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (6/6), 568 bytes | 568.00 KiB/s, done.
+Total 6 (delta 0), reused 0 (delta 0)
+To https://github.com/YevhenYefymov/git_task.git
+   f7a983f..55a4b0d  branch/yyefymov -> branch/yyefymov
+

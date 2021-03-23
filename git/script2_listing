@@ -1,0 +1,36 @@
+yevhen.yefymov@pc1camp:~/gitStuff/testRepo$ git log -10 --oneline 
+807fd2d (HEAD -> master) write ls-files
+ad0f964 update .gitignore
+ea1e7cc add char 3
+d17fd10 add char 2
+49792ad add char 1
+yevhen.yefymov@pc1camp:~/gitStuff/testRepo$ git log -1 -p
+commit 807fd2df805826549c601f12c654567ad7570f74 (HEAD -> master)
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:59:30 2021 +0200
+
+    write ls-files
+
+diff --git a/tracked_files/.gitignore b/tracked_files/.gitignore
+new file mode 100644
+index 0000000..25c0bb1
+--- /dev/null
++++ b/tracked_files/.gitignore
+@@ -0,0 +1,2 @@
++text1.txt
++text2.txt
+diff --git a/tracked_files/my_file b/tracked_files/my_file
+new file mode 100644
+index 0000000..01e79c3
+--- /dev/null
++++ b/tracked_files/my_file
+@@ -0,0 +1,3 @@
++1
++2
++3
+diff --git a/untracked_files/text1.txt b/untracked_files/text1.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/untracked_files/text2.txt b/untracked_files/text2.txt
+new file mode 100644
+index 0000000..e69de29

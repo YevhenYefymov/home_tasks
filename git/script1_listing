@@ -1,0 +1,157 @@
+-git log:
+
+yevhen.yefymov@pc1camp:~/gitStuff/testRepo$ git log -p
+commit d18df478124e19e5442070541611e5157f127322 (HEAD -> master)
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 5
+
+diff --git a/my_file b/my_file
+index 94ebaf9..8a1218a 100644
+--- a/my_file
++++ b/my_file
+@@ -2,3 +2,4 @@
+ 2
+ 3
+ 4
++5
+
+commit 22e9faad6694bedb59e05a825b6eebe0ffa485f5
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 4
+
+diff --git a/my_file b/my_file
+index 01e79c3..94ebaf9 100644
+--- a/my_file
++++ b/my_file
+@@ -1,3 +1,4 @@
+ 1
+ 2
+ 3
++4
+
+commit 771098738cf7ac20d236472547b39e9e1480e76f
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 3
+
+diff --git a/my_file b/my_file
+index 1191247..01e79c3 100644
+--- a/my_file
++++ b/my_file
+@@ -1,2 +1,3 @@
+ 1
+ 2
++3
+
+commit 418496ecf189aecf661403dafdfc67bbbc73332a
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 2
+
+diff --git a/my_file b/my_file
+index d00491f..1191247 100644
+--- a/my_file
++++ b/my_file
+@@ -1 +1,2 @@
+ 1
++2
+
+commit 53762566c5628c496e637fdffc2e24984ce142cf
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 1
+
+diff --git a/my_file b/my_file
+new file mode 100644
+index 0000000..d00491f
+--- /dev/null
++++ b/my_file
+@@ -0,0 +1 @@
++1
+
+
+
+-git show:
+
+yevhen.yefymov@pc1camp:~/gitStuff/testRepo$ git show d18df47 22e9faa 7710987 418496e 5376256
+commit d18df478124e19e5442070541611e5157f127322 (HEAD -> master)
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 5
+
+diff --git a/my_file b/my_file
+index 94ebaf9..8a1218a 100644
+--- a/my_file
++++ b/my_file
+@@ -2,3 +2,4 @@
+ 2
+ 3
+ 4
++5
+
+commit 22e9faad6694bedb59e05a825b6eebe0ffa485f5
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 4
+
+diff --git a/my_file b/my_file
+index 01e79c3..94ebaf9 100644
+--- a/my_file
++++ b/my_file
+@@ -1,3 +1,4 @@
+ 1
+ 2
+ 3
++4
+
+commit 771098738cf7ac20d236472547b39e9e1480e76f
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 3
+
+diff --git a/my_file b/my_file
+index 1191247..01e79c3 100644
+--- a/my_file
++++ b/my_file
+@@ -1,2 +1,3 @@
+ 1
+ 2
++3
+
+commit 418496ecf189aecf661403dafdfc67bbbc73332a
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 2
+
+diff --git a/my_file b/my_file
+index d00491f..1191247 100644
+--- a/my_file
++++ b/my_file
+@@ -1 +1,2 @@
+ 1
++2
+
+commit 53762566c5628c496e637fdffc2e24984ce142cf
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 15:43:39 2021 +0200
+
+    add char 1
+
+diff --git a/my_file b/my_file
+new file mode 100644
+index 0000000..d00491f
+--- /dev/null
++++ b/my_file
+@@ -0,0 +1 @@
++1

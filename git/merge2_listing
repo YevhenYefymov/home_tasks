@@ -1,0 +1,34 @@
+-force merge commit when merging branch1 into master:
+yevhen.yefymov@pc1camp:~/gitStuff/merge2$ git checkout master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+yevhen.yefymov@pc1camp:~/gitStuff/merge2$ git merge --no-ff branch1
+Merge made by the 'recursive' strategy.
+ file1 | 3 +++
+ 1 file changed, 3 insertions(+)
+yevhen.yefymov@pc1camp:~/gitStuff/merge2$ git log -1
+commit a0d0a04475572b8ef0883aaf25ed3561b101f758 (HEAD -> master)
+Merge: d03b6cb beda6c7
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 19:32:30 2021 +0200
+
+    Merge branch 'branch1'
+
+-merge branch2:
+Your branch is ahead of 'origin/master' by 3 commits.
+  (use "git push" to publish your local commits)
+yevhen.yefymov@pc1camp:~/gitStuff/merge2$ git merge branch2
+hint: Waiting for your editor to close the file... Warning: QT_DEVICE_PIXEL_RATIO is deprecated. Instead use:
+   QT_AUTO_SCREEN_SCALE_FACTOR to enable platform plugin controlled per-screen factors.
+   QT_SCREEN_SCALE_FACTORS to set per-screen factors.
+   QT_SCALE_FACTOR to set the application global scale factor.
+Merge made by the 'recursive' strategy.
+ file2 | 3 +++
+ 1 file changed, 3 insertions(+)
+yevhen.yefymov@pc1camp:~/gitStuff/merge2$ git log -1
+commit 5ff8a7d6531ce09b3e7d8915711c2eee6fd230db (HEAD -> master)
+Merge: a0d0a04 8d27c4a
+Author: yevhen.yefymov <yevhen.yefymov@plvision.eu>
+Date:   Tue Mar 23 19:34:08 2021 +0200
+
+    Merge branch 'branch2'

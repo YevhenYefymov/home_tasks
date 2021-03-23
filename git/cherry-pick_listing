@@ -1,0 +1,73 @@
+cherry-pick
+
+-cherry pick c390385 and 12ce4b9 into branch1
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git branch
+* branch1
+  branch2
+  master
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git cherry-pick c390385
+[branch1 a5026ce] add 6 to file2
+ Author: Oleksandra Bella <alexandrabella42@gmail.com>
+ Date: Tue Aug 21 18:11:08 2018 +0300
+ 1 file changed, 1 insertion(+)
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git log -1
+commit a5026ce2440b6382f77b53b04ed11eea22651350 (HEAD -> branch1)
+Author: Oleksandra Bella <alexandrabella42@gmail.com>
+Date:   Tue Aug 21 18:11:08 2018 +0300
+
+    add 6 to file2
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git cherry-pick 12ce4b9
+[branch1 185f1f7] add 7 to file2
+ Author: Oleksandra Bella <alexandrabella42@gmail.com>
+ Date: Tue Aug 21 18:11:37 2018 +0300
+ 1 file changed, 1 insertion(+)
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git log -2 --oneline 
+185f1f7 (HEAD -> branch1) add 7 to file2
+a5026ce add 6 to file2
+
+-merge branch1 into master
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git checkout master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git merge branch1
+Updating d03b6cb..185f1f7
+Fast-forward
+ file1 | 3 +++
+ file2 | 2 ++
+ 2 files changed, 5 insertions(+)
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git log --oneline 
+185f1f7 (HEAD -> master, branch1) add 7 to file2
+a5026ce add 6 to file2
+beda6c7 (origin/branch1) add 5 to file1
+8ad314b add 4 to file1
+d03b6cb (origin/master, origin/HEAD) add 3 to file
+f8356cf add 2 to file
+a693d51 add 1 to file
+7ff3f55 initial commit
+
+-cherry-pick 8d27c4 to master
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git cherry-pick 8d27c4a
+[master d6f0fde] add 8 to file2
+ Author: Oleksandra Bella <alexandrabella42@gmail.com>
+ Date: Tue Aug 21 18:12:01 2018 +0300
+ 1 file changed, 1 insertion(+)
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git log -1
+commit d6f0fde9faf2cc2fb520de2ffc656c892ebd5599 (HEAD -> master)
+Author: Oleksandra Bella <alexandrabella42@gmail.com>
+Date:   Tue Aug 21 18:12:01 2018 +0300
+
+    add 8 to file2
+
+-delete branch1 and branch2
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git branch -d branch1 branch2
+warning: not deleting branch 'branch1' that is not yet merged to
+         'refs/remotes/origin/branch1', even though it is merged to HEAD.
+error: The branch 'branch1' is not fully merged.
+If you are sure you want to delete it, run 'git branch -D branch1'.
+warning: deleting branch 'branch2' that has been merged to
+         'refs/remotes/origin/branch2', but not yet merged to HEAD.
+Deleted branch branch2 (was 8d27c4a).
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git branch -D branch1
+Deleted branch branch1 (was 185f1f7).
+yevhen.yefymov@pc1camp:~/gitStuff/cherry-pick$ git branch 
+* master
