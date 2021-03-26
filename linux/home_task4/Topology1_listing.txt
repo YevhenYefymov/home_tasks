@@ -1,0 +1,110 @@
+-add namespaces:
+sudo ip netns add netns1
+sudo ip netns add netns2
+sudo ip netns add netns3
+sudo ip netns add netns4
+sudo ip netns add netns5
+sudo ip netns add netns6
+sudo ip netns ls
+
+-link veth pairs:
+sudo ip link add veth11 netns netns1 type veth peer name veth15 netns netns5
+sudo ip link add veth22 netns netns2 type veth peer name veth25 netns netns5
+sudo ip link add veth33 netns netns3 type veth peer name veth36 netns netns6
+sudo ip link add veth44 netns netns4 type veth peer name veth46 netns netns6
+sudo ip link add vethx1 netns netns5 type veth peer name vethy1 netns netns6
+sudo ip link add vethx2 netns netns5 type veth peer name vethy2 netns netns6
+
+-add bond interfaces:
+sudo ip netns exec netns5 ip link add bondx type bond miimon 100 mode active-backup
+sudo ip netns exec netns6 ip link add bondy type bond miimon 100 mode active-backup
+
+-assign interfaces to bond:
+sudo ip netns exec netns5 ip link set vethx1 down
+sudo ip netns exec netns5 ip link set vethx1 master bondx
+sudo ip netns exec netns5 ip link set vethx2 down
+sudo ip netns exec netns5 ip link set vethx2 master bondx
+sudo ip netns exec netns5 ip link set bondx up
+
+sudo ip netns exec netns6 ip link set vethy1 down
+sudo ip netns exec netns6 ip link set vethy1 master bondy
+sudo ip netns exec netns6 ip link set vethy2 down
+sudo ip netns exec netns6 ip link set vethy2 master bondy
+sudo ip netns exec netns6 ip link set bondy up
+
+-add vlan interfaces (based on bond interfaces):
+sudo ip netns exec netns5 ip link add link bondx vethx2.50 type vlan id 50
+sudo ip netns exec netns5 ip link add link bondx vethx1.60 type vlan id 60
+
+sudo ip netns exec netns6 ip link add link bondy vethy2.50 type vlan id 50
+sudo ip netns exec netns6 ip link add link bondy vethy1.60 type vlan id 60
+
+-create bridges:
+sudo ip netns exec netns5 ip link add brx type bridge
+sudo ip netns exec netns6 ip link add bry type bridge
+
+-assign interfaces to brdiges:
+sudo ip netns exec netns5 ip link set veth15 master brx
+sudo ip netns exec netns5 ip link set veth25 master brx
+
+sudo ip netns exec netns6 ip link set veth36 master bry
+sudo ip netns exec netns6 ip link set veth46 master bry
+
+sudo ip netns exec netns5 ip link set vethx2.50 master brx
+sudo ip netns exec netns5 ip link set vethx1.60 master brx
+
+sudo ip netns exec netns6 ip link set vethy2.50 master bry
+sudo ip netns exec netns6 ip link set vethy1.60 master bry
+
+-enable vlan filtering:
+sudo ip netns exec netns5 ip link set brx type bridge vlan_filtering 1
+sudo ip netns exec netns6 ip link set bry type bridge vlan_filtering 1    
+
+-add allowed vlans on bridges:
+sudo ip netns exec netns5 bridge vlan add vid 10 pvid untagged dev veth15
+sudo ip netns exec netns5 bridge vlan add vid 20 pvid untagged dev veth25
+sudo ip netns exec netns5 bridge vlan add vid 10 pvid untagged dev vethx2.50
+sudo ip netns exec netns5 bridge vlan add vid 20 pvid untagged dev vethx1.60
+
+sudo ip netns exec netns5 bridge vlan delete vid 1 dev veth15
+sudo ip netns exec netns5 bridge vlan delete vid 1 dev vethx2.50
+sudo ip netns exec netns5 bridge vlan delete vid 1 dev vethx1.60
+sudo ip netns exec netns5 bridge vlan delete vid 1 dev veth25
+sudo ip netns exec netns5 bridge vlan delete vid 1 dev brx self
+
+sudo ip netns exec netns6 bridge vlan add vid 10 pvid untagged dev veth36
+sudo ip netns exec netns6 bridge vlan add vid 20 pvid untagged dev veth46
+sudo ip netns exec netns6 bridge vlan add vid 10 pvid untagged dev vethy2.50
+sudo ip netns exec netns6 bridge vlan add vid 20 pvid untagged dev vethy1.60
+
+sudo ip netns exec netns6 bridge vlan delete vid 1 dev veth36
+sudo ip netns exec netns6 bridge vlan delete vid 1 dev vethy2.50
+sudo ip netns exec netns6 bridge vlan delete vid 1 dev vethy1.60
+sudo ip netns exec netns6 bridge vlan delete vid 1 dev veth46
+sudo ip netns exec netns6 bridge vlan delete vid 1 dev bry self
+
+-assign ip addresses to interfaces:
+sudo ip netns exec netns1 ip address add 192.168.7.1/24 dev veth11
+sudo ip netns exec netns2 ip address add 192.168.7.2/24 dev veth22
+sudo ip netns exec netns3 ip address add 192.168.7.3/24 dev veth33
+sudo ip netns exec netns4 ip address add 192.168.7.4/24 dev veth44
+
+-set interfaces to up state:
+sudo ip netns exec netns1 ip link set veth11 up
+sudo ip netns exec netns2 ip link set veth22 up
+sudo ip netns exec netns3 ip link set veth33 up
+sudo ip netns exec netns4 ip link set veth44 up
+sudo ip netns exec netns5 ip link set veth15 up
+
+sudo ip netns exec netns5 ip link set veth15 up
+sudo ip netns exec netns5 ip link set veth25 up
+sudo ip netns exec netns5 ip link set vethx2.50 up
+sudo ip netns exec netns5 ip link set vethx1.60 up
+sudo ip netns exec netns5 ip link set brx up
+
+sudo ip netns exec netns6 ip link set veth36 up
+sudo ip netns exec netns6 ip link set veth46 up
+sudo ip netns exec netns6 ip link set vethy2.50 up
+sudo ip netns exec netns6 ip link set vethy1.60 up
+sudo ip netns exec netns6 ip link set bry up
+

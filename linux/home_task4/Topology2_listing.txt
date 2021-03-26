@@ -1,0 +1,125 @@
+-add namespaces:
+yevhen.yefymov@pc1camp:~$ sudo ip netns add netns1
+yevhen.yefymov@pc1camp:~$ sudo ip netns add netns2
+yevhen.yefymov@pc1camp:~$ sudo ip netns add netns3
+yevhen.yefymov@pc1camp:~$ sudo ip netns add netns4
+yevhen.yefymov@pc1camp:~$ sudo ip netns add netns5
+yevhen.yefymov@pc1camp:~$ sudo ip netns add netns6
+yevhen.yefymov@pc1camp:~$ sudo ip netns ls
+netns6
+netns5
+netns4
+netns3
+netns2
+netns1
+
+-link veth pairs:
+yevhen.yefymov@pc1camp:~$ sudo ip link add veth11 netns netns1 type veth peer name veth15 netns netns5
+yevhen.yefymov@pc1camp:~$ sudo ip link add veth22 netns netns2 type veth peer name veth25 netns netns5
+yevhen.yefymov@pc1camp:~$ sudo ip link add veth33 netns netns3 type veth peer name veth36 netns netns6
+yevhen.yefymov@pc1camp:~$ sudo ip link add veth44 netns netns4 type veth peer name veth46 netns netns6
+yevhen.yefymov@pc1camp:~$ sudo ip link add vethx netns netns5 type veth peer name vethy netns netns6
+
+-add bridges:
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link add brx type bridge
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 ip link add bry type bridge
+
+-add interfaces to bridges:
+--brx:
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set veth15 master brx
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set veth25 master brx
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set vethx master brx
+--bry:
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 ip link set veth36 master bry
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 ip link set veth46 master bry
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 ip link set vethy master bry
+
+-set vlan filtering on bridges:
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set brx type bridge vlan_filtering 1
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set bry type bridge vlan_filtering 1
+
+-set up IP addresses:
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns1 ip address add 192.168.7.1/24 dev veth11
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns2 ip address add 192.168.7.2/24 dev veth22
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns3 ip address add 192.168.7.3/24 dev veth33
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns4 ip address add 192.168.7.4/24 dev veth44
+
+-set interfaces up:
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns1 ip link set dev veth11 up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns2 ip link set dev veth22 up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns3 ip link set dev veth33 up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns4 ip link set dev veth44 up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set dev veth15 up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set dev veth25 up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 ip link set dev veth36 up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 ip link set dev veth46 up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set dev vethx up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 ip link set dev vethy up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 ip link set dev brx up
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 ip link set dev bry up
+
+-link list output:
+--brx:
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge link
+2: veth15 state UP : <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master brx state forwarding priority 32 cost 2 
+3: veth25 state UP @veth15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master brx state forwarding priority 32 cost 2 
+5: vethx state UP : <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master brx state forwarding priority 32 cost 2 
+--bry:
+yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge link
+2: veth36 state UP : <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master bry state forwarding priority 32 cost 2 
+3: veth46 state UP @veth36: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master bry state forwarding priority 32 cost 2 
+5: vethy state UP : <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master bry state forwarding priority 32 cost 2
+
+-set module 8021q:
+yevhen.yefymov@pc1camp:~$ lsmod | grep 8021q
+yevhen.yefymov@pc1camp:~$ sudo modprobe 8021q
+yevhen.yefymov@pc1camp:~$ lsmod | grep 8021q
+8021q                  32768  0
+garp                   16384  1 8021q
+mrp                    20480  1 8021q
+
+
+-setup vlan on bridges:
+--brx:
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge vlan add vid 10 pvid untagged dev veth15
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge vlan add vid 20 pvid untagged dev veth25
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge vlan add vid 10 pvid tagged dev vethx
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge vlan add vid 20 pvid tagged dev vethx
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge vlan del vid 1 dev veth15
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge vlan del vid 1 dev vethx
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge vlan del vid 1 dev veth25
+--bry:
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge vlan add vid 10 pvid untagged dev veth36
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge vlan add vid 20 pvid untagged dev veth46
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge vlan add vid 10 pvid tagged dev vethy
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge vlan add vid 20 pvid tagged dev vethy
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge vlan del vid 1 dev veth36
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge vlan del vid 1 dev veth46
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge vlan del vid 1 dev vethy
+
+
+-vlan lists:
+--brx:
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns5 bridge vlan 
+    port	vlan ids
+    veth15	 10 PVID Egress Untagged
+
+    veth25	 20 PVID Egress Untagged
+
+    brx	 1 PVID Egress Untagged
+
+    vethx	 10
+        20 PVID
+
+--bry:
+    yevhen.yefymov@pc1camp:~$ sudo ip netns exec netns6 bridge vlan 
+    port	vlan ids
+    veth36	 10 PVID Egress Untagged
+    
+    veth46	 20 PVID Egress Untagged
+    
+    bry	 1 PVID Egress Untagged
+    
+    vethy	 10
+        20 PVID
+
